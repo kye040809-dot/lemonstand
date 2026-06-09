@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레몬스탠드 대시보드</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, 'Malgun Gothic', sans-serif;
+            background-color: #f4f5f3;
+            color: #111;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .page {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 왼쪽 메뉴 */
+        .sidebar {
+            width: 310px;
+            background-color: #fff;
+            border-right: 1px solid #e5e5df;
+            padding: 32px 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 44px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background-color: #ffcc00;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 24px rgba(255, 204, 0, 0.35);
+            font-size: 22px;
+        }
+
+        .logo-title {
+            font-size: 21px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .logo-sub {
+            margin-top: 3px;
+            font-size: 12px;
+            color: #777;
+            font-weight: 700;
+        }
+
+        .menu-title {
+            color: #999;
+            font-size: 13px;
+            margin-bottom: 14px;
+        }
+
+        .menu-item {
+            height: 48px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0 16px;
+            margin-bottom: 8px;
+            border-radius: 14px;
+            color: #444;
+            font-weight: 700;
+        }
+
+        .menu-item.active {
+            background-color: #fff7d7;
+            color: #111;
+        }
+
+        .menu-icon {
+            width: 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        .ai-badge {
+            margin-left: auto;
+            background-color: #ffcc00;
+            border-radius: 20px;
+            padding: 4px 8px;
+            font-size: 12px;
+            color: #111;
+        }
+
+        .side-bottom {
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            bottom: 28px;
+        }
+
+        .pro-box {
+            border: 1px solid #e7e4dc;
+            border-radius: 16px;
+            padding: 20px 16px;
+            margin-bottom: 20px;
+        }
+
+        .pro-box h3 {
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+
+        .pro-box p {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #777;
+            margin-bottom: 14px;
+        }
+
+        .yellow-btn {
+            border: none;
+            background-color: #ffcc00;
+            color: #111;
+            font-weight: 800;
+            border-radius: 10px;
+            padding: 12px 18px;
+            width: 100%;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-top: 1px solid #e8e8e1;
+            padding-top: 18px;
+        }
+
+        .profile-img {
+            width: 36px;
+            height: 36px;
+            background-color: #f2f2ef;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-name {
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .profile-role {
+            color: #888;
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+        /* 오른쪽 본문 */
+        .main {
+            width: calc(100% - 310px);
+            margin-left: 310px;
+        }
+
+        .topbar {
+            height: 106px;
+            background-color: rgba(244, 245, 243, 0.96);
+            border-bottom: 1px solid #e5e5df;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 38px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar h1 {
+            font-size: 29px;
+            margin-bottom: 8px;
+        }
+
+        .topbar p {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .top-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .control-group {
+            display: flex;
+            background-color: #fafaf8;
+            border: 1px solid #e6e2d9;
+            border-radius: 14px;
+            padding: 4px;
+            gap: 2px;
+        }
+
+        .control-btn {
+            border: none;
+            background-color: transparent;
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: #85827a;
+            font-weight: 800;
+        }
+
+        .control-btn.active {
+            background-color: #fff;
+            color: #111;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .icon-btn {
+            width: 48px;
+            height: 48px;
+            border: 1px solid #e6e2d9;
+            background-color: #fafaf8;
+            border-radius: 14px;
+            font-size: 18px;
+        }
+
+        .content {
+            padding: 30px 38px 50px;
+        }
+
+        .hidden-page {
+            display: none;
+        }
+
+        .ai-banner {
+            background: linear-gradient(90deg, #fff 0%, #fff 58%, #fff6ca 100%);
+            border: 1px solid #e8e4d9;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            padding: 30px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 26px;
+        }
+
+        .onboarding-card {
+            background: linear-gradient(90deg, #fff 0%, #fff 56%, #fff2b8 100%);
+            border: 1px solid #e8e4d9;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            padding: 44px 46px;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 48px;
+            align-items: center;
+            min-height: 445px;
+        }
+
+        .onboarding-icon {
+            width: 74px;
+            height: 74px;
+            background-color: #ffcc00;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            margin-bottom: 26px;
+        }
+
+        .onboarding-card h2 {
+            font-size: 34px;
+            line-height: 1.35;
+            margin: 16px 0;
+        }
+
+        .onboarding-card p {
+            color: #555;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .onboarding-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 26px;
+        }
+
+        .onboarding-actions button {
+            border-radius: 12px;
+            padding: 15px 28px;
+            font-weight: 800;
+            font-size: 15px;
+        }
+
+        .onboarding-actions .yellow-btn {
+            width: auto;
+            border: none;
+        }
+
+        .outline-btn {
+            background-color: #fff;
+            border: 1px solid #e2ded4;
+            color: #333;
+        }
+
+        .checklist {
+            background-color: rgba(255, 255, 255, 0.58);
+            border: 1px solid #e3dfd2;
+            border-radius: 20px;
+            padding: 28px 26px;
+        }
+
+        .checklist h3 {
+            color: #777;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background-color: rgba(255, 255, 255, 0.72);
+            border: 1px solid #e6e1d5;
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+        }
+
+        .check-mark {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #21bd7b;
+            color: #fff;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        .check-mark.now {
+            background-color: #ffcc00;
+            color: #ffcc00;
+        }
+
+        .check-mark.wait {
+            background-color: #f1f1ee;
+            color: #f1f1ee;
+        }
+
+        .check-text {
+            flex: 1;
+            font-weight: 800;
+        }
+
+        .check-state {
+            color: #777;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .check-state.now {
+            color: #e8a000;
+            font-weight: 800;
+        }
+
+        .ai-left {
+            display: flex;
+            align-items: center;
+            gap: 26px;
+        }
+
+        .ai-icon {
+            width: 66px;
+            height: 66px;
+            background-color: #ffcc00;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 10px 24px rgba(255, 204, 0, 0.35);
+        }
+
+        .ai-small {
+            color: #efa400;
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .ai-banner h2 {
+            font-size: 24px;
+            margin-bottom: 16px;
+            line-height: 1.35;
+        }
+
+        .highlight {
+            background-color: #fff1a6;
+            padding: 0 5px;
+            border-radius: 5px;
+        }
+
+        .ai-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .ai-actions {
+            width: 132px;
+            flex-shrink: 0;
+        }
+
+        .ai-actions button {
+            width: 100%;
+            height: 54px;
+            border-radius: 14px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .run-btn {
+            border: none;
+            background-color: #ffcc00;
+        }
+
+        .detail-btn {
+            border: 1px solid #ece5ca;
+            background-color: rgba(255, 255, 255, 0.5);
+            color: #5d563b;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 16px;
+            margin: 8px 0 16px;
+        }
+
+        .section-title h2 {
+            font-size: 20px;
+        }
+
+        .section-title span,
+        .section-title p {
+            color: #999;
+            font-size: 13px;
+        }
+
+        .notice {
+            color: #f2a600;
+            font-weight: 700;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background-color: #fff;
+            border: 1px solid #e6e6df;
+            border-radius: 18px;
+            padding: 24px 24px 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            min-height: 254px;
+            position: relative;
+        }
+
+        .kpi-card:hover {
+            border-color: #ffcc00;
+        }
+
+        .kpi-card.active {
+            border: 2px solid #ffbf00;
+        }
+
+        .kpi-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .kpi-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+        }
+
+        .kpi-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-yellow {
+            background-color: #fff1b8;
+            color: #e3a200;
+        }
+
+        .icon-blue {
+            background-color: #dce9ff;
+            color: #437cff;
+        }
+
+        .icon-purple {
+            background-color: #eee7ff;
+            color: #8f74ff;
+        }
+
+        .icon-green {
+            background-color: #d7f6e9;
+            color: #18b979;
+        }
+
+        .tag {
+            background-color: #f1f1ee;
+            color: #777;
+            font-size: 12px;
+            padding: 7px 9px;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .kpi-value {
+            font-size: 39px;
+            font-weight: 900;
+            letter-spacing: 0;
+        }
+
+        .kpi-value small {
+            font-size: 18px;
+            color: #777;
+        }
+
+        .up {
+            display: inline-block;
+            background-color: #d8f8e8;
+            color: #00a96b;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-weight: 800;
+            margin: 12px 0 4px;
+        }
+
+        .before {
+            color: #999;
+            font-size: 13px;
+        }
+
+        .mini-line {
+            position: absolute;
+            right: 24px;
+            bottom: 66px;
+        }
+
+        .card-link {
+            position: absolute;
+            left: 24px;
+            right: 24px;
+            bottom: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #ecece6;
+            color: #aaa;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .kpi-card.active .card-link {
+            color: #eba600;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 2.1fr 0.9fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .panel {
+            background-color: #fff;
+            border: 1px solid #e6e6df;
+            border-radius: 18px;
+            padding: 30px 28px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .panel-title h3 {
+            font-size: 21px;
+            margin-bottom: 4px;
+        }
+
+        .panel-title p {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .select-box {
+            border: 1px solid #e6e2d9;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: #777;
+            font-weight: 700;
+        }
+
+        .line-chart {
+            width: 100%;
+            height: 260px;
+        }
+
+        .chart-labels {
+            display: flex;
+            gap: 18px;
+            border-top: 1px solid #e8e8e1;
+            padding-top: 16px;
+            color: #777;
+            font-size: 13px;
+            font-weight: 700;
+            flex-wrap: wrap;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 11px;
+            height: 11px;
+            border-radius: 3px;
+            margin-right: 6px;
+        }
+
+        .pink {
+            background-color: #e72c72;
+        }
+
+        .blue {
+            background-color: #8e9cdf;
+        }
+
+        .red {
+            background-color: #f05b5b;
+        }
+
+        .green {
+            background-color: #63c98b;
+        }
+
+        .purple {
+            background-color: #9b83e6;
+        }
+
+        .donut-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .donut {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: conic-gradient(#e72c72 0 33%, #8e9cdf 33% 57%, #f05b5b 57% 77%, #63c98b 77% 92%, #9b83e6 92% 100%);
+            position: relative;
+        }
+
+        .donut-center {
+            width: 98px;
+            height: 98px;
+            background-color: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 41px;
+            left: 41px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 900;
+            font-size: 20px;
+            line-height: 1.2;
+            flex-direction: column;
+            padding: 8px;
+        }
+
+        .donut-center span {
+            display: block;
+            font-size: 14px;
+            color: #777;
+            font-weight: 600;
+        }
+
+        .donut-list {
+            width: 100%;
+        }
+
+        .donut-row {
+            display: grid;
+            grid-template-columns: 1fr 54px 58px;
+            gap: 8px;
+            padding: 9px 0;
+            align-items: center;
+            font-weight: 800;
+        }
+
+        .donut-row .num {
+            color: #777;
+            text-align: right;
+        }
+
+        .donut-row .count {
+            color: #bbb;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .rank-list,
+        .recent-list {
+            list-style: none;
+        }
+
+        .rank-item {
+            display: grid;
+            grid-template-columns: 35px 1fr 70px;
+            gap: 18px;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #e8e8e1;
+        }
+
+        .rank-number {
+            color: #dfa000;
+            font-weight: 900;
+            text-align: center;
+        }
+
+        .sns-icon {
+            width: 36px;
+            height: 36px;
+            color: #fff;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: 800;
+        }
+
+        .instagram {
+            background: linear-gradient(135deg, #f83a6b, #8b4dff);
+        }
+
+        .reels {
+            background-color: #5971ff;
+        }
+
+        .youtube {
+            background-color: #ff3030;
+        }
+
+        .blog {
+            background-color: #26c878;
+        }
+
+        .store {
+            background-color: #8d74e8;
+        }
+
+        .item-title {
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .item-sub {
+            color: #777;
+            font-size: 13px;
+        }
+
+        .rate {
+            color: #eba600;
+            font-weight: 900;
+            text-align: right;
+        }
+
+        .recent-item {
+            display: grid;
+            grid-template-columns: 1fr 86px 70px;
+            gap: 14px;
+            align-items: center;
+            padding: 18px 0;
+            border-bottom: 1px solid #e8e8e1;
+        }
+
+        .recent-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .views {
+            color: #e8a000;
+            font-weight: 900;
+        }
+
+        .date {
+            color: #777;
+            text-align: right;
+        }
+
+        /* 모달 */
+        .modal-bg {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.35);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-bg.show {
+            display: flex;
+        }
+
+        .modal {
+            width: 420px;
+            max-width: 100%;
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal h2 {
+            margin-bottom: 14px;
+        }
+
+        .modal p {
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        .close-btn {
+            margin-top: 12px;
+            border: none;
+            background-color: #ffcc00;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-weight: 800;
+            width: 100%;
+        }
+
+        .dark {
+            background-color: #1f211f;
+            color: #f2f2ef;
+        }
+
+        .dark .sidebar,
+        .dark .topbar,
+        .dark .panel,
+        .dark .kpi-card,
+        .dark .modal {
+            background-color: #2b2d2a;
+            border-color: #3d403b;
+        }
+
+        .dark .control-group,
+        .dark .icon-btn,
+        .dark .select-box {
+            background-color: #262824;
+            border-color: #3d403b;
+            color: #ddd;
+        }
+
+        .dark .control-btn.active {
+            background-color: #3a3d38;
+            color: #fff;
+        }
+
+        .dark .pro-box {
+            background-color: #262824;
+            border-color: #3d403b;
+        }
+
+        .dark p,
+        .dark .profile-role,
+        .dark .item-sub,
+        .dark .before,
+        .dark .topbar p {
+            color: #bbb;
+        }
+
+        @media (max-width: 1100px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+            }
+
+            .side-bottom {
+                position: static;
+                margin-top: 24px;
+            }
+
+            .page {
+                display: block;
+            }
+
+            .main {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .topbar {
+                height: auto;
+                padding: 24px;
+                align-items: flex-start;
+                gap: 20px;
+                flex-direction: column;
+            }
+
+            .content {
+                padding: 24px;
+            }
+
+            .kpi-grid,
+            .chart-grid,
+            .bottom-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-banner,
+            .ai-left {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .onboarding-card {
+                grid-template-columns: 1fr;
+                padding: 34px 28px;
+            }
+
+            .ai-actions {
+                width: 100%;
+                display: flex;
+                gap: 10px;
+            }
+
+            .ai-actions button {
+                margin-bottom: 0;
+            }
+        }
+
+        @media (max-width: 620px) {
+            .top-controls,
+            .control-group {
+                width: 100%;
+            }
+
+            .control-group {
+                justify-content: space-between;
+            }
+
+            .control-btn {
+                flex: 1;
+                padding: 10px 6px;
+            }
+
+            .recent-item,
+            .rank-item {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .rate,
+            .date {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <aside class="sidebar">
+            <div class="logo-box">
+                <div class="logo-icon">●</div>
+                <div>
+                    <div class="logo-title">레몬스탠드</div>
+                    <div class="logo-sub">LEMONSTAND</div>
+                </div>
+            </div>
+
+            <p class="menu-title">메뉴</p>
+            <nav>
+                <a class="menu-item active" href="index_codex.html">
+                    <span class="menu-icon">▦</span>
+                    대시보드
+                </a>
+                <a class="menu-item" href="brand.html">
+                    <span class="menu-icon">◇</span>
+                    브랜드 관리
+                </a>
+                <a class="menu-item" href="#">
+                    <span class="menu-icon">✦</span>
+                    콘텐츠 제작
+                    <span class="ai-badge">AI</span>
+                </a>
+                <a class="menu-item" href="#">
+                    <span class="menu-icon">▱</span>
+                    콘텐츠 관리
+                </a>
+                <a class="menu-item" href="#">
+                    <span class="menu-icon">☼</span>
+                    설정
+                </a>
+            </nav>
+
+            <div class="side-bottom">
+                <div class="pro-box">
+                    <h3>🍋 PRO로 업그레이드</h3>
+                    <p>채널별 AI 리포트 자동발행과 상세 분석을 월 29,900원에.</p>
+                    <button class="yellow-btn">업그레이드</button>
+                </div>
+
+                <div class="profile">
+                    <div class="profile-img">👩‍💼</div>
+                    <div>
+                        <div class="profile-name">박건우</div>
+                        <div class="profile-role">광광핏 대표</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <h1>대시보드</h1>
+                    <p>전 채널 콘텐츠 마케팅 성과를 한눈에</p>
+                </div>
+
+                <div class="top-controls">
+                    <div class="control-group">
+                        <button class="control-btn mode-btn">미리보기</button>
+                        <button class="control-btn mode-btn active" id="resultBtn">성과 있음</button>
+                        <button class="control-btn mode-btn" id="onboardingBtn">온보딩</button>
+                    </div>
+                    <div class="control-group">
+                        <button class="control-btn period-btn" onclick="changePeriod('일별', this)">일별</button>
+                        <button class="control-btn period-btn" onclick="changePeriod('주별', this)">주별</button>
+                        <button class="control-btn period-btn active" onclick="changePeriod('월별', this)">월별</button>
+                    </div>
+                    <button class="icon-btn" id="darkBtn">◐</button>
+                    <button class="icon-btn" id="alarmBtn">🔔</button>
+                </div>
+            </header>
+
+            <div class="content view-page" id="performancePage">
+                <section class="ai-banner">
+                    <div class="ai-left">
+                        <div class="ai-icon">✦</div>
+                        <div>
+                            <p class="ai-small">● AI 마케팅 코치 · 지금 해야 할 단 하나</p>
+                            <h2><span class="highlight">인스타 릴스</span>를 주 3회로 늘리는 게 지금 가장 빠른 길이에요.</h2>
+                            <div class="ai-info">
+                                <span>최우선 릴스 발행 늘리기</span>
+                                <span>근거 릴스 1건 도달 = 피드 3.2배</span>
+                                <span>예상 효과 +도달 1.4만 / 월</span>
+                                <span>소요 AI 자동 · 5분</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ai-actions">
+                        <button class="run-btn" id="runBtn">바로 실행</button>
+                        <button class="detail-btn" id="coachBtn">근거 자세히</button>
+                    </div>
+                </section>
+
+                <div class="section-title">
+                    <div>
+                        <h2>주요 지표 <span>전 채널 종합(인스타·릴스·유튜브·블로그·스토어)</span></h2>
+                    </div>
+                    <p class="notice">카드를 누르면 아래에서 채널별로 분해돼요 ↓</p>
+                </div>
+
+                <section class="kpi-grid">
+                    <div class="kpi-card" onclick="selectKpi('content', this)">
+                        <div class="kpi-top">
+                            <div class="kpi-name"><span class="kpi-icon icon-yellow">□</span>총 콘텐츠 수</div>
+                            <span class="tag">전 채널 합계</span>
+                        </div>
+                        <div class="kpi-value">24<small>개</small></div>
+                        <span class="up">↑ +3개</span>
+                        <p class="before">전월 대비</p>
+                        <svg class="mini-line" width="100" height="48">
+                            <polyline points="5,38 25,31 45,34 65,20 94,9" fill="none" stroke="#16bb78" stroke-width="3"></polyline>
+                        </svg>
+                        <div class="card-link">채널별로 보기 ↓</div>
+                    </div>
+
+                    <div class="kpi-card active" onclick="selectKpi('views', this)">
+                        <div class="kpi-top">
+                            <div class="kpi-name"><span class="kpi-icon icon-blue">◎</span>조회수</div>
+                            <span class="tag">전 채널 합계</span>
+                        </div>
+                        <div class="kpi-value">25,000</div>
+                        <span class="up">↑ +18.0%</span>
+                        <p class="before">전월 대비</p>
+                        <svg class="mini-line" width="100" height="48">
+                            <polyline points="5,38 25,31 45,34 65,20 94,9" fill="none" stroke="#16bb78" stroke-width="3"></polyline>
+                        </svg>
+                        <div class="card-link">채널별로 보는 중 ↓</div>
+                    </div>
+
+                    <div class="kpi-card" onclick="selectKpi('brand', this)">
+                        <div class="kpi-top">
+                            <div class="kpi-name"><span class="kpi-icon icon-purple">◇</span>브랜드 적합도</div>
+                            <span class="tag">AI 분석 /100</span>
+                        </div>
+                        <div class="kpi-value">91<small>점</small></div>
+                        <span class="up">↑ +2점</span>
+                        <p class="before">전월 대비</p>
+                        <svg class="mini-line" width="100" height="48">
+                            <polyline points="5,38 35,27 65,15 94,9" fill="none" stroke="#16bb78" stroke-width="3"></polyline>
+                        </svg>
+                        <div class="card-link">채널별로 보기 ↓</div>
+                    </div>
+
+                    <div class="kpi-card" onclick="selectKpi('conversion', this)">
+                        <div class="kpi-top">
+                            <div class="kpi-name"><span class="kpi-icon icon-green">↗</span>전환율</div>
+                            <span class="tag">전 채널 평균</span>
+                        </div>
+                        <div class="kpi-value">3.2<small>%</small></div>
+                        <span class="up">↑ +0.4%p</span>
+                        <p class="before">전월 대비</p>
+                        <svg class="mini-line" width="100" height="48">
+                            <polyline points="5,38 35,24 65,14 94,9" fill="none" stroke="#16bb78" stroke-width="3"></polyline>
+                        </svg>
+                        <div class="card-link">채널별로 보기 ↓</div>
+                    </div>
+                </section>
+
+                <section class="chart-grid">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div class="panel-title">
+                                <span class="kpi-icon icon-blue">▥</span>
+                                <div>
+                                    <h3 id="chartTitle">조회수 추이</h3>
+                                    <p id="chartText">최근 6개월 · 조회수 카드 기준</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <svg class="line-chart" id="lineChart" viewBox="0 0 820 260" preserveAspectRatio="none">
+                            <line x1="58" y1="30" x2="800" y2="30" stroke="#eeeeea"></line>
+                            <line x1="58" y1="90" x2="800" y2="90" stroke="#eeeeea"></line>
+                            <line x1="58" y1="150" x2="800" y2="150" stroke="#eeeeea"></line>
+                            <line x1="58" y1="210" x2="800" y2="210" stroke="#eeeeea"></line>
+                            <text x="15" y="35" fill="#aaa" font-size="14">10k</text>
+                            <text x="15" y="95" fill="#aaa" font-size="14">7.5k</text>
+                            <text x="20" y="155" fill="#aaa" font-size="14">5k</text>
+                            <text x="15" y="215" fill="#aaa" font-size="14">2.5k</text>
+                            <text x="58" y="245" fill="#aaa" font-size="14">1월</text>
+                            <text x="200" y="245" fill="#aaa" font-size="14">2월</text>
+                            <text x="340" y="245" fill="#aaa" font-size="14">3월</text>
+                            <text x="480" y="245" fill="#aaa" font-size="14">4월</text>
+                            <text x="625" y="245" fill="#aaa" font-size="14">5월</text>
+                            <text x="760" y="245" fill="#aaa" font-size="14">6월</text>
+                            <polygon id="mainArea" points="58,115 200,92 340,100 480,60 625,38 760,18 760,210 58,210" fill="#e72c72" opacity="0.12"></polygon>
+                            <polyline id="line1" points="58,115 200,92 340,100 480,60 625,38 760,18" fill="none" stroke="#e72c72" stroke-width="4"></polyline>
+                            <polyline id="line2" points="58,140 200,123 340,128 480,102 625,85 760,66" fill="none" stroke="#8e9cdf" stroke-width="2.5"></polyline>
+                            <polyline id="line3" points="58,154 200,137 340,143 480,118 625,101 760,86" fill="none" stroke="#f05b5b" stroke-width="2.5"></polyline>
+                            <polyline id="line4" points="58,166 200,153 340,158 480,140 625,128 760,116" fill="none" stroke="#63c98b" stroke-width="2.5"></polyline>
+                            <polyline id="line5" points="58,185 200,178 340,181 480,168 625,160 760,152" fill="none" stroke="#9b83e6" stroke-width="2.5"></polyline>
+                            <circle id="lastDot" cx="760" cy="18" r="4" fill="#e72c72"></circle>
+                        </svg>
+
+                        <div class="chart-labels">
+                            <span><i class="dot pink"></i>인스타 · 최우수</span>
+                            <span><i class="dot blue"></i>릴스</span>
+                            <span><i class="dot red"></i>유튜브</span>
+                            <span><i class="dot green"></i>블로그</span>
+                            <span><i class="dot purple"></i>스토어</span>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div class="panel-title">
+                                <span class="kpi-icon icon-blue">◔</span>
+                                <div>
+                                    <h3 id="donutTitle">채널별 조회수</h3>
+                                    <p id="donutSubtitle">이번 기간 · 비중</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="donut-area">
+                            <div class="donut" id="donutChart">
+                                <div class="donut-center" id="donutCenter"><strong>25k</strong><span>전 채널 합계</span></div>
+                            </div>
+                            <div class="donut-list" id="donutList">
+                                <div class="donut-row"><span><i class="dot pink"></i>인스타 · 최우수</span><span class="num">33%</span><span class="count">8,250</span></div>
+                                <div class="donut-row"><span><i class="dot blue"></i>릴스</span><span class="num">24%</span><span class="count">6,000</span></div>
+                                <div class="donut-row"><span><i class="dot red"></i>유튜브</span><span class="num">20%</span><span class="count">5,000</span></div>
+                                <div class="donut-row"><span><i class="dot green"></i>블로그</span><span class="num">15%</span><span class="count">3,750</span></div>
+                                <div class="donut-row"><span><i class="dot purple"></i>스토어</span><span class="num">8%</span><span class="count">2,000</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bottom-grid">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div class="panel-title">
+                                <span class="kpi-icon icon-yellow">♕</span>
+                                <div>
+                                    <h3>성과 Top 콘텐츠</h3>
+                                    <p>참여율 높은 순 Top 5</p>
+                                </div>
+                            </div>
+                            <select class="select-box" id="topSelect" onchange="changeTopSort()">
+                                <option>참여율</option>
+                                <option>조회수</option>
+                                <option>발행일</option>
+                            </select>
+                        </div>
+
+                        <ol class="rank-list" id="topList">
+                            <li class="rank-item">
+                                <div class="rank-number">1</div>
+                                <div><span class="sns-icon instagram">◎</span><span class="item-title">우리 아이 장 건강, 직접 경험하고 나눠보실 분</span><p class="item-sub">인스타</p></div>
+                                <div class="rate">8.9%<p class="item-sub">참여율</p></div>
+                            </li>
+                            <li class="rank-item">
+                                <div class="rank-number">2</div>
+                                <div><span class="sns-icon reels">▶</span><span class="item-title">사장님이 직접 고른 오늘의 신상 3가지</span><p class="item-sub">릴스</p></div>
+                                <div class="rate">7.4%<p class="item-sub">참여율</p></div>
+                            </li>
+                            <li class="rank-item">
+                                <div class="rank-number">3</div>
+                                <div><span class="sns-icon youtube">▶</span><span class="item-title">[브이로그] 새벽 5시, 제품이 만들어지는 과정</span><p class="item-sub">유튜브</p></div>
+                                <div class="rate">6.1%<p class="item-sub">참여율</p></div>
+                            </li>
+                            <li class="rank-item">
+                                <div class="rank-number">4</div>
+                                <div><span class="sns-icon blog">B</span><span class="item-title">반려동물 영양제 고르는 법 - 성분표 보는 3가지</span><p class="item-sub">블로그</p></div>
+                                <div class="rate">5.8%<p class="item-sub">참여율</p></div>
+                            </li>
+                            <li class="rank-item">
+                                <div class="rank-number">5</div>
+                                <div><span class="sns-icon store">S</span><span class="item-title">첫 구매 고객을 위한 체험팩 이벤트</span><p class="item-sub">스토어</p></div>
+                                <div class="rate">4.9%<p class="item-sub">참여율</p></div>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div class="panel-title">
+                                <span class="kpi-icon icon-blue">▱</span>
+                                <div>
+                                    <h3>최근 콘텐츠 성과</h3>
+                                    <p>최근 발행순</p>
+                                </div>
+                            </div>
+                            <select class="select-box" id="recentSelect" onchange="changeRecentMetric()">
+                                <option>조회수</option>
+                                <option>참여율</option>
+                                <option>전환율</option>
+                            </select>
+                        </div>
+
+                        <ul class="recent-list" id="recentList">
+                            <li class="recent-item">
+                                <div class="recent-title"><span class="sns-icon instagram">◎</span><div><strong>장 건강 캠페인 2...</strong><p class="item-sub">인스타</p></div></div>
+                                <div class="views">9,240</div>
+                                <div class="date">6월 5일</div>
+                            </li>
+                            <li class="recent-item">
+                                <div class="recent-title"><span class="sns-icon reels">▶</span><div><strong>오늘의 신상 언박싱</strong><p class="item-sub">릴스</p></div></div>
+                                <div class="views">7,180</div>
+                                <div class="date">6월 4일</div>
+                            </li>
+                            <li class="recent-item">
+                                <div class="recent-title"><span class="sns-icon youtube">▶</span><div><strong>제품 제작기 브이...</strong><p class="item-sub">유튜브</p></div></div>
+                                <div class="views">6,420</div>
+                                <div class="date">6월 4일</div>
+                            </li>
+                            <li class="recent-item">
+                                <div class="recent-title"><span class="sns-icon blog">B</span><div><strong>성분표 보는 방법</strong><p class="item-sub">블로그</p></div></div>
+                                <div class="views">3,890</div>
+                                <div class="date">6월 3일</div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+
+            <div class="content view-page hidden-page" id="onboardingPage">
+                <section class="onboarding-card">
+                    <div>
+                        <div class="onboarding-icon">♙</div>
+                        <p class="ai-small">● AI 마케팅 코치</p>
+                        <h2>거의 다 왔어요! <span class="highlight">첫 콘텐츠</span> 한 번이면 시작이에요.</h2>
+                        <p>브랜드 정보만 입력하면 AI가 5개 채널 콘텐츠를 자동으로 만들어 발행해요.</p>
+                        <p>발행 3일 뒤, 이 화면에 첫 성과 분석이 채워집니다.</p>
+
+                        <div class="onboarding-actions">
+                            <button class="yellow-btn" id="makeContentBtn">첫 콘텐츠 만들기</button>
+                            <button class="outline-btn" id="brandInfoBtn">브랜드 정보 입력</button>
+                        </div>
+                    </div>
+
+                    <div class="checklist">
+                        <h3>시작 체크리스트</h3>
+                        <div class="check-item">
+                            <span class="check-mark">✓</span>
+                            <span class="check-text">브랜드·상품 정보 입력</span>
+                            <span class="check-state">완료</span>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-mark">✓</span>
+                            <span class="check-text">5채널 연동</span>
+                            <span class="check-state">완료</span>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-mark now">●</span>
+                            <span class="check-text">첫 콘텐츠 생성·발행</span>
+                            <span class="check-state now">지금 할 차례</span>
+                        </div>
+                        <div class="check-item">
+                            <span class="check-mark wait">●</span>
+                            <span class="check-text">성과 데이터 수집</span>
+                            <span class="check-state">발행 후 자동</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-bg" id="coachModal">
+        <div class="modal">
+            <h2>AI 추천 근거</h2>
+            <p>최근 6개월 데이터를 보면 릴스 콘텐츠의 평균 도달률이 피드보다 높게 나타났습니다.</p>
+            <p>따라서 릴스를 주 3회로 늘리면 한 달 기준 약 1.4만 조회수 상승을 기대할 수 있습니다.</p>
+            <button class="close-btn" onclick="closeModal('coachModal')">확인</button>
+        </div>
+    </div>
+
+    <div class="modal-bg" id="alarmModal">
+        <div class="modal">
+            <h2>알림</h2>
+            <p>콘텐츠 분석이 완료되었습니다.</p>
+            <p>AI 추천이 업데이트되었습니다.</p>
+            <p>브랜드 적합도가 전월 대비 2점 상승했습니다.</p>
+            <button class="close-btn" onclick="closeModal('alarmModal')">확인</button>
+        </div>
+    </div>
+
+    <script>
+        var coachModal = document.getElementById('coachModal');
+        var alarmModal = document.getElementById('alarmModal');
+        var chartTitle = document.getElementById('chartTitle');
+        var chartText = document.getElementById('chartText');
+        var donutTitle = document.getElementById('donutTitle');
+        var donutSubtitle = document.getElementById('donutSubtitle');
+        var donutChart = document.getElementById('donutChart');
+        var donutCenter = document.getElementById('donutCenter');
+        var donutList = document.getElementById('donutList');
+        var performancePage = document.getElementById('performancePage');
+        var onboardingPage = document.getElementById('onboardingPage');
+        var selectedKpi = 'views';
+        var selectedPeriod = '월별';
+
+        var chartData = {
+            content: {
+                title: '총 콘텐츠 수 추이',
+                text: '최근 6개월 · 콘텐츠 수 카드 기준',
+                line1: '58,168 200,152 340,155 480,132 625,108 760,92',
+                line2: '58,182 200,168 340,170 480,150 625,130 760,116',
+                line3: '58,190 200,181 340,184 480,162 625,148 760,135',
+                line4: '58,198 200,188 340,190 480,176 625,160 760,148',
+                line5: '58,205 200,198 340,196 480,185 625,174 760,160'
+            },
+            views: {
+                title: '조회수 추이',
+                text: '최근 6개월 · 조회수 카드 기준',
+                line1: '58,115 200,92 340,100 480,60 625,38 760,18',
+                line2: '58,140 200,123 340,128 480,102 625,85 760,66',
+                line3: '58,154 200,137 340,143 480,118 625,101 760,86',
+                line4: '58,166 200,153 340,158 480,140 625,128 760,116',
+                line5: '58,185 200,178 340,181 480,168 625,160 760,152'
+            },
+            brand: {
+                title: '브랜드 적합도 추이',
+                text: '최근 6개월 · 브랜드 적합도 카드 기준',
+                line1: '58,142 200,130 340,118 480,94 625,72 760,50',
+                line2: '58,154 200,144 340,132 480,112 625,94 760,76',
+                line3: '58,166 200,153 340,142 480,126 625,110 760,96',
+                line4: '58,176 200,164 340,154 480,138 625,124 760,112',
+                line5: '58,190 200,182 340,174 480,160 625,148 760,136'
+            },
+            conversion: {
+                title: '전환율 추이',
+                text: '최근 6개월 · 전환율 카드 기준',
+                line1: '58,178 200,160 340,148 480,126 625,104 760,84',
+                line2: '58,188 200,174 340,160 480,142 625,126 760,110',
+                line3: '58,196 200,184 340,172 480,156 625,142 760,128',
+                line4: '58,202 200,194 340,184 480,170 625,156 760,145',
+                line5: '58,207 200,200 340,192 480,181 625,170 760,158'
+            }
+        };
+
+        var donutData = {
+            content: {
+                '월별': { total: '24개', segments: [33, 22, 15, 18, 12], labels: ['8', '5', '4', '4', '3'] },
+                '주별': { total: '6개', segments: [28, 24, 14, 20, 14], labels: ['2', '1', '1', '1', '1'] },
+                '일별': { total: '1개', segments: [25, 20, 15, 25, 15], labels: ['1', '0', '0', '0', '0'] }
+            },
+            views: {
+                '월별': { total: '25,000', segments: [33, 24, 20, 15, 8], labels: ['8,250', '6,000', '5,000', '3,750', '2,000'] },
+                '주별': { total: '6,200', segments: [30, 22, 18, 18, 12], labels: ['1,860', '1,360', '1,120', '1,120', '740'] },
+                '일별': { total: '1,850', segments: [32, 20, 18, 18, 12], labels: ['592', '370', '333', '333', '222'] }
+            },
+            brand: {
+                '월별': { total: '91점', segments: [30, 22, 18, 18, 12], labels: ['30', '20', '17', '13', '11'] },
+                '주별': { total: '90점', segments: [28, 24, 18, 18, 12], labels: ['26', '22', '16', '14', '12'] },
+                '일별': { total: '89점', segments: [27, 23, 19, 17, 14], labels: ['25', '21', '17', '15', '11'] }
+            },
+            conversion: {
+                '월별': { total: '3.2%', segments: [32, 22, 18, 18, 10], labels: ['1.0%', '0.7%', '0.6%', '0.6%', '0.3%'] },
+                '주별': { total: '2.8%', segments: [30, 24, 18, 18, 10], labels: ['0.9%', '0.7%', '0.5%', '0.5%', '0.2%'] },
+                '일별': { total: '2.4%', segments: [28, 24, 20, 18, 10], labels: ['0.8%', '0.6%', '0.5%', '0.5%', '0.2%'] }
+            }
+        };
+
+
+        // KPI 데이터 추가
+        var kpiData = {
+            content: {
+                '월별': { value: '24', unit: '개', change: '+3', percent: false },
+                '주별': { value: '8', unit: '개', change: '+1', percent: false },
+                '일별': { value: '2', unit: '개', change: '+1', percent: false }
+            },
+            views: {
+                '월별': { value: '25,000', unit: '', change: '+18.0%', percent: true },
+                '주별': { value: '6,200', unit: '', change: '+12.5%', percent: true },
+                '일별': { value: '1,850', unit: '', change: '+8.2%', percent: true }
+            },
+            brand: {
+                '월별': { value: '91', unit: '점', change: '+2', percent: false },
+                '주별': { value: '90', unit: '점', change: '+1', percent: false },
+                '일별': { value: '89', unit: '점', change: '+0.5', percent: false }
+            },
+            conversion: {
+                '월별': { value: '3.2', unit: '%', change: '+0.4%p', percent: false },
+                '주별': { value: '2.8', unit: '%', change: '+0.2%p', percent: false },
+                '일별': { value: '2.4', unit: '%', change: '+0.1%p', percent: false }
+            }
+        };
+
+        function selectKpi(type, card) {
+            var cards = document.getElementsByClassName('kpi-card');
+            var links = document.getElementsByClassName('card-link');
+
+            for (var i = 0; i < cards.length; i++) {
+                cards[i].classList.remove('active');
+                links[i].innerHTML = '채널별로 보기 ↓';
+            }
+
+            card.classList.add('active');
+            card.getElementsByClassName('card-link')[0].innerHTML = '기준으로 보는 중 ↓';
+
+            selectedKpi = type;
+            drawChart(type);
+        }
+
+        function drawChart(type) {
+            var data = chartData[type];
+            var line1 = changeLineByPeriod(data.line1);
+            var line2 = changeLineByPeriod(data.line2);
+            var line3 = changeLineByPeriod(data.line3);
+            var line4 = changeLineByPeriod(data.line4);
+            var line5 = changeLineByPeriod(data.line5);
+
+            chartTitle.innerHTML = data.title;
+            chartText.innerHTML = selectedPeriod + ' 기준 · ' + data.title.replace(' 추이', '') + ' 카드 기준';
+
+            document.getElementById('line1').setAttribute('points', line1);
+            document.getElementById('line2').setAttribute('points', line2);
+            document.getElementById('line3').setAttribute('points', line3);
+            document.getElementById('line4').setAttribute('points', line4);
+            document.getElementById('line5').setAttribute('points', line5);
+            document.getElementById('mainArea').setAttribute('points', line1 + ' 760,210 58,210');
+
+            var lastPoint = line1.split(' ')[5].split(',');
+            document.getElementById('lastDot').setAttribute('cx', lastPoint[0]);
+            document.getElementById('lastDot').setAttribute('cy', lastPoint[1]);
+
+            updateDonut(type);
+        }
+
+        function changeLineByPeriod(points) {
+            var result = '';
+            var pointList = points.split(' ');
+
+            for (var i = 0; i < pointList.length; i++) {
+                var xy = pointList[i].split(',');
+                var x = Number(xy[0]);
+                var y = Number(xy[1]);
+
+                if (selectedPeriod == '일별') {
+                    var daily = [18, -10, 14, -18, 8, -24];
+                    y = y + daily[i];
+                } else if (selectedPeriod == '주별') {
+                    var weekly = [8, -4, 5, -8, 2, -12];
+                    y = y + weekly[i];
+                }
+
+                if (y < 18) {
+                    y = 18;
+                }
+
+                if (y > 206) {
+                    y = 206;
+                }
+
+                result = result + x + ',' + y;
+
+                if (i < pointList.length - 1) {
+                    result = result + ' ';
+                }
+            }
+
+            return result;
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        // KPI 카드 업데이트 함수
+        function updateKpiValues(period) {
+            var kpiCards = document.getElementsByClassName('kpi-card');
+            var kpiTypes = ['content', 'views', 'brand', 'conversion'];
+
+            for (var i = 0; i < kpiCards.length; i++) {
+                var type = kpiTypes[i];
+                var data = kpiData[type][period];
+
+                if (data) {
+                    var valueElement = kpiCards[i].querySelector('.kpi-value');
+                    valueElement.innerHTML = data.value + (data.unit ? '<small>' + data.unit + '</small>' : '');
+
+                    var upElement = kpiCards[i].querySelector('.up');
+                    upElement.innerHTML = '↑ ' + data.change;
+                }
+            }
+        }
+
+        function updateDonut(type) {
+            var data = donutData[type][selectedPeriod];
+            if (!data) return;
+
+            var colors = ['#e72c72', '#8e9cdf', '#f05b5b', '#63c98b', '#9b83e6'];
+            var gradientParts = [];
+            var start = 0;
+
+            for (var i = 0; i < data.segments.length; i++) {
+                var end = start + data.segments[i];
+                gradientParts.push(colors[i] + ' ' + start + '% ' + end + '%');
+                start = end;
+            }
+
+            donutChart.style.background = 'conic-gradient(' + gradientParts.join(', ') + ')';
+            donutCenter.innerHTML = '<strong>' + data.total + '</strong><span>전 채널 합계</span>';
+
+            var rows = donutList.querySelectorAll('.donut-row');
+            for (var i = 0; i < rows.length; i++) {
+                var num = rows[i].querySelector('.num');
+                var count = rows[i].querySelector('.count');
+                if (num && count) {
+                    num.textContent = data.segments[i] + '%';
+                    count.textContent = data.labels[i];
+                }
+            }
+
+            var title = '채널별 '; 
+            if (type === 'views') title += '조회수';
+            else if (type === 'content') title += '콘텐츠 수';
+            else if (type === 'brand') title += '브랜드 적합도';
+            else if (type === 'conversion') title += '전환율';
+            donutTitle.textContent = title;
+            donutSubtitle.textContent = selectedPeriod + ' 기준 · 비중';
+        }
+
+        function changePeriod(text, button) {
+            var buttons = document.getElementsByClassName('period-btn');
+
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+
+            button.classList.add('active');
+            selectedPeriod = text;
+            updateKpiValues(text); // KPI 값 업데이트 추가
+            drawChart(selectedKpi);
+        }
+
+        function showMode(mode) {
+            var buttons = document.getElementsByClassName('mode-btn');
+
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+
+            if (mode == 'onboarding') {
+                performancePage.classList.add('hidden-page');
+                onboardingPage.classList.remove('hidden-page');
+                document.getElementById('onboardingBtn').classList.add('active');
+            } else {
+                onboardingPage.classList.add('hidden-page');
+                performancePage.classList.remove('hidden-page');
+                document.getElementById('resultBtn').classList.add('active');
+            }
+        }
+
+        function changeTopSort() {
+            var select = document.getElementById('topSelect');
+            var rates = document.getElementsByClassName('rate');
+            var names = ['8.9%', '7.4%', '6.1%', '5.8%', '4.9%'];
+            var views = ['9,240', '7,180', '6,420', '3,890', '2,740'];
+            var dates = ['6월 5일', '6월 4일', '6월 4일', '6월 3일', '6월 2일'];
+
+            for (var i = 0; i < rates.length; i++) {
+                if (select.value == '참여율') {
+                    rates[i].innerHTML = names[i] + '<p class="item-sub">참여율</p>';
+                } else if (select.value == '조회수') {
+                    rates[i].innerHTML = views[i] + '<p class="item-sub">조회수</p>';
+                } else {
+                    rates[i].innerHTML = dates[i] + '<p class="item-sub">발행일</p>';
+                }
+            }
+        }
+
+        function changeRecentMetric() {
+            var select = document.getElementById('recentSelect');
+            var views = document.getElementsByClassName('views');
+            var viewData = ['9,240', '7,180', '6,420', '3,890'];
+            var joinData = ['8.9%', '7.4%', '6.1%', '5.8%'];
+            var conversionData = ['4.1%', '3.8%', '3.1%', '2.9%'];
+
+            for (var i = 0; i < views.length; i++) {
+                if (select.value == '조회수') {
+                    views[i].innerHTML = viewData[i];
+                } else if (select.value == '참여율') {
+                    views[i].innerHTML = joinData[i];
+                } else {
+                    views[i].innerHTML = conversionData[i];
+                }
+            }
+        }
+
+        document.getElementById('coachBtn').onclick = function() {
+            coachModal.classList.add('show');
+        };
+
+        document.getElementById('alarmBtn').onclick = function() {
+            alarmModal.classList.add('show');
+        };
+
+        document.getElementById('darkBtn').onclick = function() {
+            document.body.classList.toggle('dark');
+        };
+
+        document.getElementById('runBtn').onclick = function() {
+            alert('릴스 제작 실행 화면으로 이동합니다.');
+        };
+
+        document.getElementById('resultBtn').onclick = function() {
+            showMode('result');
+        };
+
+        document.getElementById('onboardingBtn').onclick = function() {
+            showMode('onboarding');
+        };
+
+        document.getElementById('makeContentBtn').onclick = function() {
+            alert('첫 콘텐츠 만들기 화면으로 이동합니다.');
+        };
+
+        document.getElementById('brandInfoBtn').onclick = function() {
+            alert('브랜드 정보 입력 화면으로 이동합니다.');
+        };
+
+        window.onclick = function(event) {
+            if (event.target == coachModal) {
+                coachModal.classList.remove('show');
+            }
+
+            if (event.target == alarmModal) {
+                alarmModal.classList.remove('show');
+            }
+        };
+    </script>
+</body>
+</html>
